@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sjtu.yifei.aidl">
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true"
+        android:label="@string/app_name">
+        <service
+            android:name="com.sjtu.yifei.service.ABridgeService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":aidl">
+            <intent-filter>
+                <action android:name="android.intent.action.ICALL_AIDL_YIFEI" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>

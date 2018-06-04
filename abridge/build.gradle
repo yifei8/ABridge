@@ -1,0 +1,42 @@
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayName = 'abridge'
+    artifact = bintrayName
+    libraryName = 'abridge'
+    libraryDescription = 'abridge for android ipc'
+    libraryVersion = abridge_version
+    localRepo = '../repo-abridge'
+}
+
+android {
+    compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
+    buildToolsVersion BUILDTOOLS_VERSION
+
+    defaultConfig {
+        minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
+        targetSdkVersion Integer.parseInt(TARGET_SDK_VERSION)
+    }
+
+    buildTypes {
+        lintOptions { abortOnError false }
+    }
+
+    sourceSets {
+        main {
+            aidl.srcDirs = ['src/main/aidl', 'src/main/aidl/']
+            java.srcDirs = ['src/main/java', 'src/main/java/']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
+}
+
+
+//apply from: '../bintrayv1.gradle'
+//apply from: '../installv1.gradle'
+
+apply from: '../bintray.gradle'
