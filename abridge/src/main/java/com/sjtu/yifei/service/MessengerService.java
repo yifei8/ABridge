@@ -10,7 +10,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 
 public class MessengerService extends Service {
-    public final static String TAG = "RemoteService";
+    public final static String TAG = "MessengerService";
 
     @SuppressLint("HandlerLeak")
     private Messenger messenger = new Messenger(new Handler() {

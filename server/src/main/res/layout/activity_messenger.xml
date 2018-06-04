@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.sjtu.yifei.aidlserver.MainActivity">
+    tools:context="com.sjtu.yifei.aidlserver.TestMessengerActivity">
 
     <EditText
         android:id="@+id/tv_name"

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".TestMessengerActivity">
+
+    <EditText
+        android:id="@+id/et_show_out_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:hint="输入您需要发送的信息"
+        android:background="@color/colorAccent"
+        android:layout_above="@id/acquire_info"/>
+
+    <Button
+        android:id="@+id/acquire_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="发送"/>
+
+    <TextView
+        android:id="@+id/tv_show_in_title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:textSize="13sp"
+        android:text="服务端返回的信息:"
+        android:layout_below="@id/acquire_info"/>
+    <TextView
+        android:id="@+id/tv_show_in_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:textSize="16sp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@id/tv_show_in_title"/>
+</RelativeLayout>

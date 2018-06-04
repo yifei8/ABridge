@@ -3,27 +3,24 @@ package com.sjtu.yifei.aidlserver;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.sjtu.yifei.aidl.ISender;
-import com.sjtu.yifei.aidl.IReceiver;
 import com.sjtu.yifei.messenger.MessengerReceiver;
 import com.sjtu.yifei.messenger.MessengerSender;
 
-public class MainActivity extends AppCompatActivity implements MessengerReceiver, View.OnClickListener {
+public class TestMessengerActivity extends AppCompatActivity implements MessengerReceiver, View.OnClickListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "TestMessengerActivity";
     private EditText tv_name;
     private EditText tv_age;
     private EditText tv_user;
-    private MessengerSender remoteCall;
+    private MessengerSender sender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_messenger);
         tv_name = findViewById(R.id.tv_name);
         tv_age = findViewById(R.id.tv_age);
         tv_user = findViewById(R.id.tv_user);
@@ -41,13 +38,13 @@ public class MainActivity extends AppCompatActivity implements MessengerReceiver
             Bundle bundle = new Bundle();
             bundle.putString("content", messageStr);
             message.setData(bundle);
-            remoteCall.sendMessage(message);
+            sender.sendMessage(message);
         }
     }
 
     @Override
     public void setSender(MessengerSender sender) {
-        this.remoteCall = sender;
+        this.sender = sender;
     }
 
     public final static int ACTIVITYID = 0X0002;

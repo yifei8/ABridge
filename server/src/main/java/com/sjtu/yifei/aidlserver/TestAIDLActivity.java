@@ -8,7 +8,7 @@ import android.widget.EditText;
 import com.sjtu.yifei.aidl.IReceiver;
 import com.sjtu.yifei.aidl.ISender;
 
-public class MainActivity2 extends AppCompatActivity implements IReceiver, View.OnClickListener {
+public class TestAIDLActivity extends AppCompatActivity implements IReceiver, View.OnClickListener {
 
     private static final String TAG = "MainActivity";
     private EditText tv_name;
@@ -19,7 +19,7 @@ public class MainActivity2 extends AppCompatActivity implements IReceiver, View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_aidl);
         tv_name = findViewById(R.id.tv_name);
         tv_age = findViewById(R.id.tv_age);
         tv_user = findViewById(R.id.tv_user);

@@ -6,10 +6,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.sjtu.yifei.aidl.ISender;
 import com.sjtu.yifei.aidl.IReceiver;
+import com.sjtu.yifei.aidl.ISender;
 
-public class MainActivity extends AppCompatActivity implements IReceiver, View.OnClickListener {
+public class TestAIDLActivity extends AppCompatActivity implements IReceiver, View.OnClickListener {
 
     private ISender iCallRemote;
     private TextView tv_show_in_message;
@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements IReceiver, View.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_aidl);
         findViewById(R.id.acquire_info).setOnClickListener(this);
         tv_show_in_message = findViewById(R.id.tv_show_in_message);
         et_show_out_message = findViewById(R.id.et_show_out_message);
