@@ -28,8 +28,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-//    api project(':abridge')
-    api "com.sjtu.yifei:abridge:${rootProject.ext.abridge_version}"
+    api project(':abridge')
+//    api "com.sjtu.yifei:abridge:${rootProject.ext.abridge_version}"
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     testImplementation 'junit:junit:4.12'

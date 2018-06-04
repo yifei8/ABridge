@@ -14,5 +14,15 @@
                 <action android:name="android.intent.action.ICALL_AIDL_YIFEI" />
             </intent-filter>
         </service>
+
+        <service
+            android:name="com.sjtu.yifei.service.MessengerService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":aidl">
+            <intent-filter>
+                <action android:name="android.intent.action.ICALL_MESSENGER_YIFEI" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>

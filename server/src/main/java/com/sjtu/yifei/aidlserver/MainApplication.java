@@ -2,7 +2,7 @@ package com.sjtu.yifei.aidlserver;
 
 import android.app.Application;
 
-import com.sjtu.yifei.aidl.IBridge;
+import com.sjtu.yifei.IBridge;
 
 /**
  * [description]

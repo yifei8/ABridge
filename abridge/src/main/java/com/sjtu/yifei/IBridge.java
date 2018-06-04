@@ -1,4 +1,4 @@
-package com.sjtu.yifei.aidl;
+package com.sjtu.yifei;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,9 +13,18 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import com.sjtu.yifei.aidl.AidlActivityLifecycleCallbacks;
+import com.sjtu.yifei.aidl.IReceiver;
+import com.sjtu.yifei.aidl.IReceiverAidlInterface;
+import com.sjtu.yifei.aidl.ISender;
+import com.sjtu.yifei.aidl.ISenderAidlInterface;
+import com.sjtu.yifei.messenger.MsgerActivityLifecycleCallbacks;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -35,16 +44,14 @@ import java.util.Map;
 
 public final class IBridge {
 
-    private static final String BIND_SERVICE_ACTION = "android.intent.action.ICALL_AIDL_YIFEI";
-    private static final String BIND_SERVICE_COMPONENT_NAME_CLS = "com.sjtu.yifei.service.ABridgeService";
-
     private IBridge() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
     @SuppressLint("StaticFieldLeak")
     private static Application sApplication;
-    private static String sServicePkgName;
+    public static String sServicePkgName;
+    public static Handler handler;
 
     /**
      * Init utils.
@@ -60,6 +67,8 @@ public final class IBridge {
             }
             handler = new Handler(sApplication.getMainLooper());
             sApplication.registerActivityLifecycleCallbacks(mCallbacks);
+            sApplication.registerActivityLifecycleCallbacks(new AidlActivityLifecycleCallbacks());
+            sApplication.registerActivityLifecycleCallbacks(new MsgerActivityLifecycleCallbacks());
         }
     }
 
@@ -67,78 +76,13 @@ public final class IBridge {
         init(app, null);
     }
 
-    private static Handler handler;
-
     private static final LinkedList<Activity> ACTIVITY_LIST = new LinkedList<>();
 
     private static ActivityLifecycleCallbacks mCallbacks = new ActivityLifecycleCallbacks() {
-
-        private List<Activity> activities = new ArrayList<>();
-        private IBinder sBinder = new Binder();
-        
-        private ISenderAidlInterface iRemoteCall;
-        
-        private IReceiverAidlInterface iRemoteCallback = new IReceiverAidlInterface.Stub() {
-
-            @Override
-            public void receiveMessage(final String json) throws RemoteException {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (activities.get(0) instanceof IReceiver) {
-                            ((IReceiver) activities.get(0)).receiveMessage(json);
-                        }
-                    }
-                });
-            }
-        };
-
-        private ServiceConnection serviceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                iRemoteCall = ISenderAidlInterface.Stub.asInterface(iBinder);
-                if (activities.get(0) instanceof IReceiver) {
-                    ((IReceiver) activities.get(0)).setSender(new ISenderImp(iRemoteCall));
-                }
-                try {
-                    iRemoteCall.join(sBinder);
-                    iRemoteCall.registerCallback(iRemoteCallback);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-                iRemoteCall = null;
-            }
-        };
-
-        private void startAndBindService() {
-            Intent serviceIntent = new Intent();
-            serviceIntent.setAction(BIND_SERVICE_ACTION);
-            serviceIntent.setComponent(new ComponentName(sServicePkgName, BIND_SERVICE_COMPONENT_NAME_CLS));
-            activities.get(0).startService(serviceIntent);
-            activities.get(0).bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        }
-
-        private void unBindService() {
-            try {
-                iRemoteCall.unregisterCallback(iRemoteCallback);
-                iRemoteCall.leave(sBinder);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            activities.get(0).unbindService(serviceConnection);
-        }
         
         @Override
         public void onActivityCreated(Activity activity, Bundle bundle) {
             setTopActivity(activity);
-            if (activity instanceof IReceiver) {
-                activities.add(activity);
-                startAndBindService();
-            }
         }
 
         @Override
@@ -158,10 +102,6 @@ public final class IBridge {
 
         @Override
         public void onActivityStopped(Activity activity) {
-            if (activity.isFinishing() && ACTIVITY_LIST.size() == 1) {
-                unBindService();
-                activities.remove(activity);
-            }
         }
 
         @Override
@@ -174,23 +114,6 @@ public final class IBridge {
             ACTIVITY_LIST.remove(activity);
         }
     };
-
-    static class ISenderImp implements ISender {
-        private ISenderAidlInterface iRemoteCall;
-
-        private ISenderImp(ISenderAidlInterface iRemoteCall) {
-            this.iRemoteCall = iRemoteCall;
-        }
-
-        @Override
-        public void sendMessage(String message) {
-            try {
-                iRemoteCall.sendMessage(message);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     /**
      * Return the context of Application object.
