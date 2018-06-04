@@ -39,7 +39,7 @@ public class MsgerActivityLifecycleCallbacks implements Application.ActivityLife
     @SuppressLint("HandlerLeak")
     private Messenger replyMessenger = new Messenger(new Handler() {
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(final Message msg) {
             super.handleMessage(msg);
             if (activities.get(0) instanceof MessengerReceiver) {
                 ((MessengerReceiver) activities.get(0)).receiveMessage(msg);
@@ -73,6 +73,19 @@ public class MsgerActivityLifecycleCallbacks implements Application.ActivityLife
     }
 
     private void unBindService() {
+        Message message = Message.obtain();
+        message.arg1 = 0x0000c1;
+        Bundle bundle = new Bundle();
+        bundle.putString("MessengerService", "unregisterCallback");
+        message.setData(bundle);
+
+        try {
+            //消息从客户端发出
+            sMessenger.send(message);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         activities.get(0).unbindService(serviceConnection);
     }
 

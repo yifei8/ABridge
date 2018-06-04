@@ -12,6 +12,7 @@ import com.sjtu.yifei.messenger.MessengerSender;
 public class TestMessengerActivity extends AppCompatActivity implements MessengerReceiver, View.OnClickListener {
 
     private static final String TAG = "TestMessengerActivity";
+    public final static int ACTIVITYID = 0X0002;
     private EditText tv_name;
     private EditText tv_age;
     private EditText tv_user;
@@ -47,7 +48,6 @@ public class TestMessengerActivity extends AppCompatActivity implements Messenge
         this.sender = sender;
     }
 
-    public final static int ACTIVITYID = 0X0002;
     @Override
     public void receiveMessage(Message message) {
         if (message.arg1 == ACTIVITYID) {

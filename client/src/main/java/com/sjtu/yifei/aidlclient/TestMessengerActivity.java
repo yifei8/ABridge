@@ -12,6 +12,7 @@ import com.sjtu.yifei.messenger.MessengerSender;
 
 public class TestMessengerActivity extends AppCompatActivity implements MessengerReceiver, View.OnClickListener {
 
+    public final static int ACTIVITYID = 0X0002;
     private MessengerSender sender;
     private TextView tv_show_in_message;
     private EditText et_show_out_message;
@@ -31,6 +32,7 @@ public class TestMessengerActivity extends AppCompatActivity implements Messenge
         if (id == R.id.acquire_info) {
             String messageStr = et_show_out_message.getText().toString();
             Message message = Message.obtain();
+            message.arg1 = ACTIVITYID;
             //注意这里，把`Activity`的`Messenger`赋值给了`message`中，当然可能你已经发现这个就是`Service`中我们调用的`msg.replyTo`了。
             Bundle bundle = new Bundle();
             bundle.putString("content", messageStr);
@@ -51,8 +53,10 @@ public class TestMessengerActivity extends AppCompatActivity implements Messenge
 
     @Override
     public void receiveMessage(Message message) {
-        //客户端接受服务端传来的消息
-        String str = (String) message.getData().get("content");
-        tv_show_in_message.setText(str);
+        if (message.arg1 == ACTIVITYID) {
+            //客户端接受服务端传来的消息
+            String str = (String) message.getData().get("content");
+            tv_show_in_message.setText(str);
+        }
     }
 }
