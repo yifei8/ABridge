@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sjtu.yifei.aidl">
+    package="com.sjtu.yifei.ipc">
 
     <application
         android:allowBackup="true"
@@ -19,7 +19,7 @@
             android:name="com.sjtu.yifei.service.MessengerService"
             android:enabled="true"
             android:exported="true"
-            android:process=":aidl">
+            android:process=":messenger">
             <intent-filter>
                 <action android:name="android.intent.action.ICALL_MESSENGER_YIFEI" />
             </intent-filter>
