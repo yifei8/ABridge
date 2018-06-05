@@ -1,15 +1,128 @@
-# AIDL
-# ABridge
+>Android 进程间通信最牛方案，为简单而生
 
-## 本地广播缺点
-本地广播是相对消耗时间、空间最多的一种方式，但是大家都知道，广播是四大组件之一，许多系统级的事件都是通过广播来通知的，比如说网络的变化、电量的变化，短信发送和接收的状态，所以，如果与android系统进行相关的通知，还是要选择本地广播；在BroadcastReceiver的 onReceive方法中，可以获得Context 、intent参数，这两个参数可以调用许多的sdk中的方法，而eventbus获得这两个参数相对比较困难；
+### Github 源码: [ABridge](https://github.com/yifei8/ABridge)
 
-因此广播相对于其他的方式而言，广播是重量级的，消耗资源较多的方式。他的优势体现在与sdk连接紧密，如果需要同 android 交互的时候，广播的便捷性会抵消掉它过多的资源消耗，但是如果不同android交互，或者说，只做很少的交互，使用广播是一种浪费
+## 一、介绍
+做Android开发的小伙伴们是不是经常有遇到同一个公司有多个App，而这些App之间需要进行通信业务。于是需要解决这种IPC问题，而ABridge可轻松解决进程间通信问题。
 
+## 二、Android IPC方式
+跨进程常见的几种通信方式：Bundle通过Intent传递数据，文件共享，ContentProvider，基于Binder的AIDL和Messenger以及Socket。
 
-## Messenger与AIDL的比较
-首先，在实现的难度上，肯定是Messenger要简单的多——至少不需要写AIDL文件了(虽然如果认真的究其本质，会发现它的底层实现还是AIDL)。另外，使用Messenger还有一个显著的好处是它会把所有的请求排入队列，因此你几乎可以不用担心多线程可能会带来的问题。
+## 三、IPC是what?
+也许有些小伙伴还不是很清楚IPC概念，这里我简单的概述一下。
 
-但是这样说来，难道AIDL进行IPC就一无是处了么？当然不是，如果是那样的话它早就被淘汰了。一方面是如果项目中有并发处理问题的需求，或者会有大量的并发请求，这个时候Messenger就不适用了——它的特性让它只能串行的解决请求。另外，我们在使用Messenger的时候只能通过Message来传递信息实现交互，但是在有些时候也许我们需要直接跨进程调用服务端的方法，这个时候又怎么办呢？只能使用AIDL。
+IPC是 Inter-Process Communication的缩写，意为进程间通信或跨进程通信，是指两个进程之间进行数据交换的过程。
 
-所以，这两种IPC方式各有各的优点和缺点，具体使用哪种就看具体的需要了——当然，能使用简单的就尽量使用简单的吧。
+线程是CPU调度的最小单元，同时线程是一种有限的系统资源。进程一般指一个执行单元，在PC和移动设备上指一个程序或者一个应用。一个进程可以包含多个线程，因此进程和线程是包含与被包含的关系。最简单的情况下，一个进程中只可以有一个线程，即主线程，在Android中也叫UI线程。
+
+IPC不是Android中所独有的，任何一个操作系统都需要相应的IPC机制，比如Windows上可以通过剪贴板等来进行进程间通信。Android是一种基于Linux内核的移动操作系统，它的进程间通信方式并不能完全继承自Linux，它有自己的进程间通信方式。
+
+ ## 四、Why ABridge
+在使用ABridge之前，我们可以通过上面的方式来实现IPC，但这些方式实现过程繁琐，学习成本较高。为此，ABridge诞生了——一款可以几行代码轻松实现跨进程通信框架。
+
+ABridge提供了两种方案进行跨进程来满足不同场景的业务需求：一种是基于Messenger，另一种是基于AIDL。当然Messenger本质也是AIDL，只是进行了封装，开发的时候不用再写.aidl文件。
+
+## 五、基本用法
+- 方案一：基于Messenger
+  ### step1 添加依赖
+  ```java
+    api "com.sjtu.yifei:abridge:xxx.xxx.xxx"
+  ```
+  ### step2 初始化
+  ```java
+  public class MainApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //注意这里的packagename，需要通信的多个app只能使用一个packagename
+        //即使用一个app作为server启动这个共享服务来进行通信
+        IBridge.init(this, "packagename");
+    }
+  }
+  ```
+  ### step3 需要通信的activity实现接口 MessengerReceiver
+  ```java
+  public class TestMessengerActivity extends AppCompatActivity implements MessengerReceiver {
+   //跨进程通信的 发送器
+   private MessengerSender sender;
+
+   //MessengerReceiver 接口方法 设置发送器
+   @Override
+    public void setSender(MessengerSender sender) {
+        this.sender = sender;
+    }
+   
+    //MessengerReceiver 接口方法  接受跨进程发送过来的message
+    @Override
+    public void receiveMessage(Message message) {
+        if (message.arg1 == ACTIVITYID) {
+            //客户端接受服务端传来的消息
+            String str = (String) message.getData().get("content");
+            tv_show_in_message.setText(str);
+        }
+    }
+  }
+  ```
+  ### step4 跨进程发送信息
+  ```java
+   //接上文
+    public void sendMessage(String messageStr)
+            Message message = Message.obtain();
+            message.arg1 = ACTIVITYID;
+            Bundle bundle = new Bundle();
+            bundle.putString("content", messageStr);
+            message.setData(bundle);
+            sender.sendMessage(message);
+    }
+  ```
+- 方案二：基于AIDL
+  ### step1 添加依赖
+  ```java
+    api "com.sjtu.yifei:abridge:xxx.xxx.xxx"
+  ```
+  ### step2 初始化
+  ```java
+  public class MainApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //注意这里的packagename，需要通信的多个app只能使用一个packagename
+        //即使用一个app作为server启动这个共享服务来进行通信
+        IBridge.init(this, "packagename");
+    }
+  }
+  ```
+  ### step3 需要通信的activity实现接口 MessengerReceiver
+  ```java
+  public class TestAIDLActivity extends AppCompatActivity implements IReceiver {
+   //跨进程通信的 发送器
+   private ISender sender;
+
+   //IReceiver 接口方法 设置发送器
+  @Override
+    public void setSender(ISender sender) {
+        this.send = sender;
+    }
+
+   //IReceiver 接口方法  接受跨进程发送过来的message
+    @Override
+    public void receiveMessage(String message) {
+        tv_user.setText(message);
+    }
+ 
+  }
+  ```
+  ### step4 跨进程发送信息
+  ```java
+   //接上文
+    public void sendMessage(String messageStr)
+        send.sendMessage(messageStr);
+    }
+  ```
+## 六、Email
+yifei8@gmail.com
+
+644912187@qq.com
+## 七、欢迎 fork、issues
