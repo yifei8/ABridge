@@ -1,3 +1,7 @@
+模块|abridge|
+---|---
+最新版本|[![Download](https://api.bintray.com/packages/iyifei/maven/abridge/images/download.svg)](https://bintray.com/iyifei/maven/abridge/_latestVersion)
+
 >Android 进程间通信最牛方案，为简单而生
 
 ### Github 源码: [ABridge](https://github.com/yifei8/ABridge)
