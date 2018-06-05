@@ -30,7 +30,7 @@ public class TestMessengerActivity extends AppCompatActivity implements Messenge
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.acquire_info) {
-            String messageStr = et_show_out_message.getText().toString();
+            String messageStr =  "client :" + et_show_out_message.getText().toString();
             Message message = Message.obtain();
             message.arg1 = ACTIVITYID;
             //注意这里，把`Activity`的`Messenger`赋值给了`message`中，当然可能你已经发现这个就是`Service`中我们调用的`msg.replyTo`了。

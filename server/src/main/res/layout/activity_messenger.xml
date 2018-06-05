@@ -12,18 +12,10 @@
     tools:context="com.sjtu.yifei.aidlserver.TestMessengerActivity">
 
     <EditText
-        android:id="@+id/tv_name"
+        android:id="@+id/et_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="姓名"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/tv_age"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:hint="年龄"
+        android:hint="请输入发送信息"
         android:textSize="16sp" />
 
     <Button
@@ -31,13 +23,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="添加"/>
+        android:text="发送"/>
 
-    <EditText
-        android:id="@+id/tv_user"
+    <TextView
+        android:id="@+id/tv_show_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="姓名:张三，年龄：19"
         android:textSize="16sp" />
 </LinearLayout>

@@ -3,18 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ABridge.iml" filepath="$PROJECT_DIR$/ABridge.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ABridge.iml" filepath="$PROJECT_DIR$/ABridge.iml" />
-      <module fileurl="file://$PROJECT_DIR$/AIDL.iml" filepath="$PROJECT_DIR$/AIDL.iml" />
-      <module fileurl="file://$PROJECT_DIR$/AndroidIPCTest.iml" filepath="$PROJECT_DIR$/AndroidIPCTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/abridge/abridge.iml" filepath="$PROJECT_DIR$/abridge/abridge.iml" />
-      <module fileurl="file://$PROJECT_DIR$/abridge/abridge.iml" filepath="$PROJECT_DIR$/abridge/abridge.iml" />
-      <module fileurl="file://$PROJECT_DIR$/client/aidlclient.iml" filepath="$PROJECT_DIR$/client/aidlclient.iml" />
-      <module fileurl="file://$PROJECT_DIR$/server/aidlserver.iml" filepath="$PROJECT_DIR$/server/aidlserver.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/client/client.iml" filepath="$PROJECT_DIR$/client/client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/client/client.iml" filepath="$PROJECT_DIR$/client/client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/messenger/messenger.iml" filepath="$PROJECT_DIR$/messenger/messenger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
       <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
     </modules>
   </component>
