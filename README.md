@@ -126,7 +126,12 @@ ABridge提供了两种方案进行跨进程来满足不同场景的业务需求�
         send.sendMessage(messageStr);
     }
   ```
-## 六、Email
+## 六、沟通
+#### qq群
+
+![qq交流群.jpeg](https://user-gold-cdn.xitu.io/2018/6/5/163cea15e497ee16?w=200&h=274&f=jpeg&s=15655)
+
+#### Email
 yifei8@gmail.com
 
 644912187@qq.com
