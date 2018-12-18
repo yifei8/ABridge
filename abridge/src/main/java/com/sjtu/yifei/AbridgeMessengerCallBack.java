@@ -1,4 +1,4 @@
-package com.sjtu.yifei.messenger;
+package com.sjtu.yifei;
 
 import android.os.Message;
 
@@ -7,7 +7,6 @@ import android.os.Message;
  * author: yifei
  * created at 18/6/2 下午11:52
  */
-public interface MessengerReceiver {
-    void setSender(MessengerSender sender);
+public interface AbridgeMessengerCallBack {
     void receiveMessage(Message message);
 }

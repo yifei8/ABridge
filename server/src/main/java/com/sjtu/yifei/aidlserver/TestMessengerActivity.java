@@ -7,16 +7,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.sjtu.yifei.messenger.MessengerReceiver;
-import com.sjtu.yifei.messenger.MessengerSender;
+import com.sjtu.yifei.AbridgeMessengerCallBack;
+import com.sjtu.yifei.IBridge;
 
-public class TestMessengerActivity extends AppCompatActivity implements MessengerReceiver, View.OnClickListener {
+public class TestMessengerActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "TestMessengerActivity";
     public final static int ACTIVITYID = 0X0002;
     private EditText et_message;
     private TextView tv_show_message;
-    private MessengerSender sender;
+
+    private AbridgeMessengerCallBack callBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,17 @@ public class TestMessengerActivity extends AppCompatActivity implements Messenge
         et_message = findViewById(R.id.et_message);
         tv_show_message = findViewById(R.id.tv_show_message);
         findViewById(R.id.btn_add).setOnClickListener(this);
+
+        IBridge.registerMessengerCallBack(callBack = new AbridgeMessengerCallBack() {
+            @Override
+            public void receiveMessage(Message message) {
+                if (message.arg1 == ACTIVITYID) {
+                    //客户端接受服务端传来的消息
+                    String str = (String) message.getData().get("content");
+                    tv_show_message.setText(str);
+                }
+            }
+        });
     }
 
     @Override
@@ -38,21 +50,13 @@ public class TestMessengerActivity extends AppCompatActivity implements Messenge
             Bundle bundle = new Bundle();
             bundle.putString("content", messageStr);
             message.setData(bundle);
-            sender.sendMessage(message);
+            IBridge.sendMessengerMessage(message);
         }
     }
 
     @Override
-    public void setSender(MessengerSender sender) {
-        this.sender = sender;
-    }
-
-    @Override
-    public void receiveMessage(Message message) {
-        if (message.arg1 == ACTIVITYID) {
-            //客户端接受服务端传来的消息
-            String str = (String) message.getData().get("content");
-            tv_show_message.setText(str);
-        }
+    protected void onDestroy() {
+        IBridge.uRegisterMessengerCallBack(callBack);
+        super.onDestroy();
     }
 }

@@ -6,14 +6,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.sjtu.yifei.aidl.IReceiver;
-import com.sjtu.yifei.aidl.ISender;
+import com.sjtu.yifei.AbridgeCallBack;
+import com.sjtu.yifei.IBridge;
 
-public class TestAIDLActivity extends AppCompatActivity implements IReceiver, View.OnClickListener {
+public class TestAIDLActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ISender iCallRemote;
     private TextView tv_show_in_message;
     private EditText et_show_out_message;
+    private AbridgeCallBack callBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +22,12 @@ public class TestAIDLActivity extends AppCompatActivity implements IReceiver, Vi
         findViewById(R.id.acquire_info).setOnClickListener(this);
         tv_show_in_message = findViewById(R.id.tv_show_in_message);
         et_show_out_message = findViewById(R.id.et_show_out_message);
+        IBridge.registerAIDLCallBack(callBack = new AbridgeCallBack() {
+            @Override
+            public void receiveMessage(String message) {
+                tv_show_in_message.setText(message);
+            }
+        });
     }
 
     @Override
@@ -29,22 +35,14 @@ public class TestAIDLActivity extends AppCompatActivity implements IReceiver, Vi
         int id = view.getId();
         if (id == R.id.acquire_info) {
             String message = et_show_out_message.getText().toString();
-            iCallRemote.sendMessage(message);
+            IBridge.sendAIDLMessage(message);
         }
     }
 
     @Override
     protected void onDestroy() {
+        IBridge.uRegisterAIDLCallBack(callBack);
         super.onDestroy();
     }
 
-    @Override
-    public void setSender(ISender sender) {
-        this.iCallRemote = sender;
-    }
-
-    @Override
-    public void receiveMessage(String message) {
-        tv_show_in_message.setText(message);
-    }
 }
