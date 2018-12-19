@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import android.util.Log;
 
 ;
 import com.sjtu.yifei.aidl.IReceiverAidlInterface;
@@ -27,6 +28,7 @@ import java.util.List;
  * 修改备注：
  */
 final class AbridgeManager {
+    private static final String TAG = "AbridgeManager";
     private static final String BIND_SERVICE_ACTION = "android.intent.action.ICALL_AIDL_YIFEI";
     private static final String BIND_SERVICE_COMPONENT_NAME_CLS = "com.sjtu.yifei.service.ABridgeService";
     private static AbridgeManager instance;
@@ -76,6 +78,10 @@ final class AbridgeManager {
     }
 
     public void callRemote(String message) {
+        if (iSenderAidlInterface == null) {
+            Log.e(TAG, "error: ipc process not started，please make sure ipc process is alive");
+            return;
+        }
         if (!TextUtils.isEmpty(message)) {
             try {
                 iSenderAidlInterface.sendMessage(message);
@@ -107,6 +113,10 @@ final class AbridgeManager {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             iSenderAidlInterface = ISenderAidlInterface.Stub.asInterface(iBinder);
+            if (iSenderAidlInterface == null) {
+                Log.e(TAG, "error: ipc process not started，please make sure ipc process is alive");
+                return;
+            }
             try {
                 iSenderAidlInterface.join(sBinder);
                 iSenderAidlInterface.registerCallback(iReceiverAidlInterface);
@@ -136,15 +146,17 @@ final class AbridgeManager {
      * 关闭服务
      */
     public void unBindService() {
-        if (iSenderAidlInterface != null) {
-            try {
-                iSenderAidlInterface.unregisterCallback(iReceiverAidlInterface);
-                iSenderAidlInterface.leave(sBinder);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            sApplication.unbindService(serviceConnection);
+        if (iSenderAidlInterface == null) {
+            Log.e(TAG, "error: ipc process not started，please make sure ipc process is alive");
+            return;
         }
+        try {
+            iSenderAidlInterface.unregisterCallback(iReceiverAidlInterface);
+            iSenderAidlInterface.leave(sBinder);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        sApplication.unbindService(serviceConnection);
     }
 
 }

@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
  * 修改备注：
  */
 final class AbridgeMessengerManager {
-
+    private static final String TAG = "AbridgeMessengerManager";
     private static final String BIND_SERVICE_ACTION = "android.intent.action.ICALL_MESSENGER_YIFEI";
     private static final String BIND_MESSENGER_SERVICE_COMPONENT_NAME_CLS = "com.sjtu.yifei.service.MessengerService";
     private static AbridgeMessengerManager instance;
@@ -71,6 +72,10 @@ final class AbridgeMessengerManager {
     }
 
     public void callRemote(Message message) {
+        if (sMessenger == null) {
+            Log.e(TAG, "error: ipc process not started，please make sure ipc process is alive");
+            return;
+        }
         try {
             message.replyTo = replyMessenger;
             sMessenger.send(message);
@@ -111,9 +116,11 @@ final class AbridgeMessengerManager {
     }
 
     public void unBindService() {
-        if (sMessenger != null) {
-            sApplication.unbindService(serviceConnection);
+        if (sMessenger == null) {
+            Log.e(TAG, "error: ipc process not started，please make sure ipc process is alive");
+            return;
         }
+        sApplication.unbindService(serviceConnection);
     }
 
 }
