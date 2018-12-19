@@ -3,6 +3,8 @@
 ---|---
 最新版本|[![Download](https://api.bintray.com/packages/iyifei/maven/abridge/images/download.svg)](https://bintray.com/iyifei/maven/abridge/_latestVersion)
 
+更新说明：为了让用户能更灵活到进行进程间的通信，不在局限于Activity使用场景，1.0.0版本做了全面的改进，可方便用户在进程中任何地方和另一个进程进行通信，同时也不在支持0.0.1的用法，给用户带来的不便尽请谅解。老版本用户可根据新版本的用法做简单的改动就可以升级上来。
+
 >Android 进程间通信最牛方案，为简单而生
 
 ### Github 源码: [ABridge](https://github.com/yifei8/ABridge)
@@ -22,12 +24,87 @@ IPC是 Inter-Process Communication的缩写，意为进程间通信或跨进程�
 
 IPC不是Android中所独有的，任何一个操作系统都需要相应的IPC机制，比如Windows上可以通过剪贴板等来进行进程间通信。Android是一种基于Linux内核的移动操作系统，它的进程间通信方式并不能完全继承自Linux，它有自己的进程间通信方式。
 
- ## 四、Why ABridge
+## 四、Why ABridge
 在使用ABridge之前，我们可以通过上面的方式来实现IPC，但这些方式实现过程繁琐，学习成本较高。为此，ABridge诞生了——一款可以几行代码轻松实现跨进程通信框架。
 
 ABridge提供了两种方案进行跨进程来满足不同场景的业务需求：一种是基于Messenger，另一种是基于AIDL。当然Messenger本质也是AIDL，只是进行了封装，开发的时候不用再写.aidl文件。
 
-## 五、基本用法
+## 五、新版本基本用法
+### step1 添加依赖
+```gradle
+    api "com.sjtu.yifei:abridge:_latestVersion"
+```
+### step2 初始化
+```java
+  public class MainApplication extends Application {
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //注意这里的packagename，需要通信的多个app只能使用一个packagename
+        //ABridge初始化有两种方式
+        //方式一:基于Messenger
+        IBridge.init(this, "com.sjtu.yifei.aidlserver", IBridge.AbridgeType.MESSENGER);
+        //方式二:基于自定义的AIDL
+        IBridge.init(this, "com.sjtu.yifei.aidlserver", IBridge.AbridgeType.AIDL);
+    }
+
+    @Override
+    public void onTerminate() {
+        //注意释放
+        IBridge.recycle();
+        super.onTerminate();
+    }
+  }
+```
+  
+### step3 通信使用
+#### 3.1 基于Messenger IPC
+```java
+ // 1 注册回调
+ IBridge.registerMessengerCallBack(callBack = new AbridgeMessengerCallBack() {
+            @Override
+            public void receiveMessage(Message message) {
+                if (message.arg1 == ACTIVITYID) {
+                    //todo客户端接受服务端传来的消息
+                    
+                }
+            }
+        });
+        
+// 2 反注册回调，避免内存泄漏
+IBridge.uRegisterMessengerCallBack(callBack);
+
+// 3 发送消息
+ Message message = Message.obtain();
+ message.arg1 = ACTIVITYID;
+ //注意这里，把`Activity`的`Messenger`赋值给了`message`中，当然可能你已经发现这个就是`Service`中我们调用的`msg.replyTo`了。
+ Bundle bundle = new Bundle();
+ bundle.putString("content", messageStr);
+ message.setData(bundle);
+ 
+ IBridge.sendMessengerMessage(message);
+```
+#### 3.2 基于AIDL IPC
+```java
+ // 1 注册回调
+ IBridge.registerAIDLCallBack(callBack = new AbridgeCallBack() {
+            @Override
+            public void receiveMessage(String message) {
+                //todo客户端接受服务端传来的消息
+            }
+        });
+        
+// 2 反注册回调，避免内存泄漏
+IBridge.uRegisterAIDLCallBack(callBack);
+
+// 3 发送消息
+String message = "待发送消息";
+IBridge.sendAIDLMessage(message);
+```
+
+## 注、版本更新到1.0.0以后将弃用~~0.0.1版本基本用法~~以下是老版本用法
 - 方案一：基于Messenger
   ### step1 添加依赖
   ```java
