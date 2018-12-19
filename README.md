@@ -3,7 +3,7 @@
 ---|---
 最新版本|[![Download](https://api.bintray.com/packages/iyifei/maven/abridge/images/download.svg)](https://bintray.com/iyifei/maven/abridge/_latestVersion)
 
-更新说明：为了让用户能更灵活到进行进程间的通信，不在局限于Activity使用场景，1.0.0版本做了全面的改进，可方便用户在进程中任何地方和另一个进程进行通信，同时也不在支持0.0.1的用法，给用户带来的不便尽请谅解。老版本用户可根据新版本的用法做简单的改动就可以升级上来。
+更新说明：为了让用户能更灵活的使用ABridge进行进程间的通信，且不在局限于Activity使用场景，1.0.0版本做了全面的改进，可方便用户在进程中任何地方和另一个进程进行通信，同时也不在支持0.0.1的用法，给用户带来的不便尽请谅解。老版本用户可根据新版本的用法做简单的改动就可以升级上来。
 
 >Android 进程间通信最牛方案，为简单而生
 
