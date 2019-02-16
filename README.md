@@ -83,7 +83,6 @@ IBridge.uRegisterMessengerCallBack(callBack);
  Bundle bundle = new Bundle();
  bundle.putString("content", messageStr);
  message.setData(bundle);
- 
  IBridge.sendMessengerMessage(message);
 ```
 #### 3.2 基于AIDL IPC
